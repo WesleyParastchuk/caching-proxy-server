@@ -4,6 +4,17 @@ import { Cache } from 'cache-manager';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 
+interface ResponseFormat {
+  data: string;
+  headers: any;
+  status: number;
+}
+
+interface CacheResponse {
+  response: ResponseFormat;
+  hit: 'HIT' | 'MISS';
+}
+
 @Injectable()
 export class ApiProxyService {
   constructor(
@@ -11,18 +22,36 @@ export class ApiProxyService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  private async setCache(key: string): Promise<any> {
+  private async setCache(key: string): Promise<CacheResponse> {
     const response = await lastValueFrom(
       this.httpService.get(`${process.env.ORIGIN}/${key}`),
     );
-    return await this.cacheManager.set(key, response.data, 300);
+
+    const filteredHeaders = Object.fromEntries(
+      Object.entries(response.headers).filter(
+        ([key]) => key.toLowerCase() !== 'x-cache',
+      ),
+    );
+
+    const responseValue: ResponseFormat = {
+      data: response.data,
+      headers: filteredHeaders,
+      status: response.status,
+    };
+
+    await this.cacheManager.set(
+      key,
+      { ...responseValue },
+      process.env.CACHE_TTL ? parseInt(process.env.CACHE_TTL) : 10000,
+    );
+
+    return { response: responseValue, hit: 'MISS' };
   }
 
-  async getCache(key: string): Promise<any> {
-    console.log('key', key);
-    const value = await this.cacheManager.get(key);
+  async getCache(key: string): Promise<CacheResponse> {
+    const value = (await this.cacheManager.get(key)) as ResponseFormat;
     if (value) {
-      return value;
+      return { response: value, hit: 'HIT' };
     }
     return await this.setCache(key);
   }
