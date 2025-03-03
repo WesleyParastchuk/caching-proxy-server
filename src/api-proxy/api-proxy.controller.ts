@@ -6,7 +6,7 @@ import { Controller, Get, Param, Res } from '@nestjs/common';
 export class ApiProxyController {
   constructor(private readonly apiProxyService: ApiProxyService) {}
 
-  @Get('{*splash}')
+  @Get('api/{*splash}')
   async getCache(
     @Param('splash') splash: Array<string>,
     @Res() res: Response,
