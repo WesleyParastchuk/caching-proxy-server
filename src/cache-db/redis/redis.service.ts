@@ -12,7 +12,7 @@ export class RedisService extends CacheDBGateway {
   public async setCache(
     key: string,
     value: string,
-    ttl: number = 60,
+    ttl: number = parseInt(process.env.CACHE_TTL as string) || 60,
   ): Promise<string> {
     await this.redis.set(key, value, 'EX', ttl);
     return value;
