@@ -1,29 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import { Redis } from 'ioredis';
-import { CacheGateway } from 'src/cache/cacheGateway';
+import { CacheDBGateway } from 'src/cache/cacheGateway';
 
 @Injectable()
-export class RedisService extends CacheGateway {
+export class RedisService extends CacheDBGateway {
   constructor(@InjectRedis() private readonly redis: Redis) {
     super();
   }
 
-  private async setCache<T>(key: string, ttl: number = 60): Promise<T> {
-    const value = key as T;
-    await this.redis.set(key, JSON.stringify(value), 'EX', ttl);
+  public async setCache(
+    key: string,
+    value: string,
+    ttl: number = 60,
+  ): Promise<string> {
+    await this.redis.set(key, value, 'EX', ttl);
     return value;
   }
 
-  async getCache<T>(key: string): Promise<T> {
-    const data = await this.redis.get(key);
-    if (data) {
-      return JSON.parse(data) as T;
-    }
-    return this.setCache(key);
+  public async getCache(key: string): Promise<string | null> {
+    return await this.redis.get(key);
   }
 
-  async clearCache(): Promise<void> {
+  public async clearCache(): Promise<void> {
     await this.redis.flushdb();
   }
 }

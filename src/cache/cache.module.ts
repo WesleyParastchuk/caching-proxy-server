@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { CacheController } from './cache.controller';
-import { RedisService } from 'src/redis/redis.service';
-import { createCacheProvider } from './cache-provider.factory';
 import { CustomRedisModule } from 'src/redis/custom-redis/custom-redis.module';
+import { HttpModule } from '@nestjs/axios';
+import { CacheService } from './cache.service';
 
 @Module({
-  imports: [CustomRedisModule],
+  imports: [CustomRedisModule, HttpModule],
   controllers: [CacheController],
-  providers: [createCacheProvider(RedisService)],
+  providers: [CacheService],
 })
 export class CacheModule2 {}

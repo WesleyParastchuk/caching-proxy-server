@@ -1,9 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { CacheGateway } from './cacheGateway';
+import { CacheDBGateway } from './cacheGateway';
 
 @Controller()
 export class CacheController {
-  constructor(private readonly cacheService: CacheGateway) {}
+  constructor(private readonly cacheService: CacheDBGateway) {}
 
   @Get('dev/{*splash}')
   async getCache(@Param('splash') splash: Array<string>): Promise<string> {
