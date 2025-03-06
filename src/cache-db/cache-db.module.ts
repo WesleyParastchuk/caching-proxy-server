@@ -1,17 +1,12 @@
-import { CacheDBGateway } from 'src/cache/cacheGateway';
+import { AbstractCacheStore } from 'src/shared/abstraction/AbstractCacheStore';
 import { Module } from '@nestjs/common';
-import { RedisService } from 'src/cache-db/redis/redis.service';
-import { RedisModule } from './redis/redis.module';
+import { RedisModule } from '../redis/redis.module';
+import { createCacheStore } from './factory/cache-store.factory';
+import { CacheStore } from 'src/shared/constants/CacheStore.enum';
 
 @Module({
   imports: [RedisModule],
-  providers: [
-    {
-      provide: CacheDBGateway,
-      useFactory: (redisService: RedisService) => redisService,
-      inject: [RedisService],
-    },
-  ],
-  exports: [CacheDBGateway],
+  providers: [createCacheStore(CacheStore.REDIS)],
+  exports: [AbstractCacheStore],
 })
 export class CacheDbModule {}

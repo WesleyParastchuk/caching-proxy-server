@@ -1,4 +1,4 @@
-export abstract class CacheDBGateway {
+export abstract class AbstractCacheStore {
   public abstract getCache(key: string): Promise<string | null>;
   public abstract setCache(
     key: string,

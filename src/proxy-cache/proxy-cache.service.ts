@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CacheDBGateway } from './cacheGateway';
+import { AbstractCacheStore } from '../shared/abstraction/AbstractCacheStore';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
-export class CacheService {
+export class ProxyCacheService {
   constructor(
-    private readonly cacheDBService: CacheDBGateway,
+    private readonly cacheDBService: AbstractCacheStore,
     private readonly httpService: HttpService,
   ) {}
 

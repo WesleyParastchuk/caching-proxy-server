@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import { Redis } from 'ioredis';
-import { CacheDBGateway } from 'src/cache/cacheGateway';
+import { AbstractCacheStore } from 'src/shared/abstraction/AbstractCacheStore';
 
 @Injectable()
-export class RedisService extends CacheDBGateway {
+export class RedisCacheService extends AbstractCacheStore {
   constructor(@InjectRedis() private readonly redis: Redis) {
     super();
   }
