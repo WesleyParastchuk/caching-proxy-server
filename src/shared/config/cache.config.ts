@@ -7,5 +7,5 @@ interface CacheConfig {
 
 export const cacheConfig: CacheConfig = {
   ttl: process.env.CACHE_TTL ? parseInt(process.env.CACHE_TTL) : 60,
-  type: CacheStoreType.REDIS,
+  type: (process.env.CACHE_TYPE as CacheStoreType) || CacheStoreType.IN_MEMORY,
 };

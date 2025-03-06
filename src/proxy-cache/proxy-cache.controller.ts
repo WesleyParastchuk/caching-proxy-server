@@ -1,19 +1,15 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Req, Res } from '@nestjs/common';
 import { ProxyCacheService } from './proxy-cache.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller()
 export class ProxyCacheController {
   constructor(private readonly proxyCacheService: ProxyCacheService) {}
 
-  @Get('{*splash}')
-  async getCache(
-    @Param('splash') splash: Array<string>,
-    @Res() res: Response,
-  ): Promise<any> {
-    const cachedValue = await this.proxyCacheService.getCache<any>(
-      splash.join('/'),
-    );
+  @Get('*')
+  async getCache(@Req() req: Request, @Res() res: Response): Promise<any> {
+    const cachedValue = await this.proxyCacheService.getCache<any>(req.url);
+
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Hit', cachedValue.status);
     res.send(cachedValue.data);
