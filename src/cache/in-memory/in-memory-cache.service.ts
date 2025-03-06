@@ -10,16 +10,16 @@ export class InMemoryCacheService extends AbstractCacheStore {
     super();
   }
 
-  public async getCache(key: string): Promise<string | null> {
-    return await this.cacheManager.get(key);
+  public async getCache<T>(key: string): Promise<T | null> {
+    return await this.cacheManager.get<T>(key);
   }
 
-  public async setCache(
+  public async setCache<T>(
     key: string,
     value: string,
     ttl: number = cacheConfig.ttl * 1000,
-  ): Promise<string> {
-    return await this.cacheManager.set(key, value, ttl);
+  ): Promise<T> {
+    return (await this.cacheManager.set(key, value, ttl)) as T;
   }
 
   public async clearCache(): Promise<void> {

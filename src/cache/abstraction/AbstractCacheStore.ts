@@ -1,9 +1,9 @@
 export abstract class AbstractCacheStore {
-  public abstract getCache(key: string): Promise<string | null>;
-  public abstract setCache(
+  public abstract getCache<T>(key: string): Promise<T | null>;
+  public abstract setCache<T>(
     key: string,
     value: string,
     ttl?: number,
-  ): Promise<string>;
+  ): Promise<T>;
   public abstract clearCache(): Promise<void>;
 }

@@ -10,18 +10,18 @@ export class ProxyCacheService {
     private readonly httpService: HttpService,
   ) {}
 
-  public async getCache(key: string): Promise<string> {
-    const data = await this.cacheDBService.getCache(key);
+  public async getCache<T>(key: string): Promise<T> {
+    const data = await this.cacheDBService.getCache<string>(key);
     if (data) {
-      return data;
+      return JSON.parse(data) as T;
     }
-    return this.setCache(key);
+    return this.setCache<T>(key);
   }
 
-  public async setCache(key: string): Promise<string> {
+  public async setCache<T>(key: string): Promise<T> {
     const value = await this.fetchCache(key);
     const valueString = JSON.stringify(value);
-    return this.cacheDBService.setCache(key, valueString);
+    return this.cacheDBService.setCache<T>(key, valueString);
   }
 
   private async fetchCache(key: string): Promise<any> {

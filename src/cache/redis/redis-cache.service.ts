@@ -9,17 +9,17 @@ export class RedisCacheService extends AbstractCacheStore {
     super();
   }
 
-  public async setCache(
+  public async setCache<T>(
     key: string,
     value: string,
     ttl: number = parseInt(process.env.CACHE_TTL as string) || 60,
-  ): Promise<string> {
-    await this.redis.set(key, value, 'EX', ttl);
-    return value;
+  ): Promise<T> {
+    await this.redis.set(key, JSON.stringify(value), 'EX', ttl);
+    return value as T;
   }
 
-  public async getCache(key: string): Promise<string | null> {
-    return await this.redis.get(key);
+  public async getCache<T>(key: string): Promise<T | null> {
+    return (await this.redis.get(key)) as T;
   }
 
   public async clearCache(): Promise<void> {
