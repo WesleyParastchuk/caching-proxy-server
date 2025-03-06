@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AbstractCacheStore } from '../shared/abstraction/AbstractCacheStore';
+import { AbstractCacheStore } from '../cache/abstraction/AbstractCacheStore';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 

@@ -7,4 +7,4 @@ import { RedisConnectionModule } from './connection/redis-connection.module';
   providers: [RedisCacheService],
   exports: [RedisCacheService],
 })
-export class RedisModule {}
+export class RedisCacheModule {}
