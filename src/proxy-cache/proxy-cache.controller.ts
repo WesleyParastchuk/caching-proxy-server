@@ -15,6 +15,7 @@ export class ProxyCacheController {
       splash.join('/'),
     );
     res.setHeader('Content-Type', 'application/json');
-    res.send(cachedValue);
+    res.setHeader('Cache-Hit', cachedValue.status);
+    res.send(cachedValue.data);
   }
 }
