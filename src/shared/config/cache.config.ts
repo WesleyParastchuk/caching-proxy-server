@@ -1,11 +1,11 @@
-import { CacheStore } from '../constants/CacheStore.enum';
+import { CacheStoreType } from '../constants/CacheStore.enum';
 
 interface CacheConfig {
   ttl: number; // in seconds
-  type: CacheStore;
+  type: CacheStoreType;
 }
 
 export const cacheConfig: CacheConfig = {
   ttl: process.env.CACHE_TTL ? parseInt(process.env.CACHE_TTL) : 60,
-  type: CacheStore.IN_MEMORY,
+  type: CacheStoreType.REDIS,
 };
