@@ -16,6 +16,13 @@ O comportamento do cache pode ser ajustado com as variáveis de ambiente:
 - **CACHE_TTL**: Define o tempo de vida do cache em segundos.
 - **CACHE_TYPE**: Escolha entre `'MEMORY'` ou `'REDIS'` para decidir onde o cache será armazenado.
 
+## Funcionalidades
+
+- **Encaminha requisições para um servidor de destino**: O servidor proxy repassa as requisições para o endereço definido na variável `ORIGIN`.
+- **Armazena as respostas em cache**: As respostas são armazenadas em cache (na memória ou Redis, conforme a configuração).
+- **Retorna `X-Cache: HIT` quando a resposta é servida do cache**: Se o dado estiver no cache, ele é retornado com o cabeçalho `X-Cache: HIT`.
+- **Retorna `X-Cache: MISS` quando a resposta é buscada do servidor de origem**: Se o dado não estiver no cache, a resposta é buscada do servidor de origem e o cabeçalho `X-Cache: MISS` é retornado.
+
 ## Instalação
 
 Siga os passos abaixo para instalar e rodar o projeto:
@@ -23,8 +30,8 @@ Siga os passos abaixo para instalar e rodar o projeto:
 ### 1. Clonar o Repositório
 
 ```bash
-git clone https://github.com/WesleyParastchuk/caching-proxy-server.git
-cd caching-server
+git clone https://github.com/seu-usuario/proxy-cache-server.git
+cd proxy-cache-server
 ```
 
 ### 2. Instalar Dependências
@@ -40,7 +47,7 @@ npm install
 Crie um arquivo `.env` com as variáveis de configuração. Abaixo está um exemplo de configuração:
 
 ```env
-NODE_ENV=development
+NODE_ENV=production
 PORT=3000
 ORIGIN=https://api.destino.com
 
@@ -87,15 +94,35 @@ npm start
 
 O servidor será iniciado e estará disponível na porta configurada em `PORT`.
 
-## Exemplo de Uso
+## Uso
 
-Uma vez que o servidor esteja rodando, você pode fazer requisições para as rotas configuradas. Exemplo de requisição:
+Faça requisições para o proxy:
 
 ```bash
-curl http://localhost:3000/sua-rota
+curl -i http://localhost:3000/minha-rota
 ```
 
-Essa requisição será encaminhada para o servidor de destino configurado em `ORIGIN`. O resultado será armazenado no cache e, para as requisições subsequentes, a resposta será servida diretamente do cache.
+### Exemplo de Resposta
+
+#### Primeira requisição (MISS - servidor de origem):
+
+```http
+HTTP/1.1 200 OK
+X-Cache: MISS
+Content-Type: application/json
+
+{"message": "Resposta do servidor de origem"}
+```
+
+#### Segunda requisição (HIT - cache):
+
+```http
+HTTP/1.1 200 OK
+X-Cache: HIT
+Content-Type: application/json
+
+{"message": "Resposta do servidor de origem"}
+```
 
 ## Docker Compose
 
@@ -103,6 +130,9 @@ Caso queira rodar o Redis via Docker Compose, o `docker-compose.yml` já está c
 
 ```bash
 docker-compose up --build
+```
+
+Isso irá criar e rodar os containers para o servidor e o Redis, conforme configurado no seu arquivo `docker-compose.yml`.
 
 ## Como Funciona o Cache
 
@@ -118,4 +148,3 @@ Contribuições são bem-vindas! Se você tiver ideias para melhorias ou correç
 ## Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
-```
