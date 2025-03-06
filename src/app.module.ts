@@ -1,18 +1,9 @@
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ApiProxyModule } from './api-proxy/api-proxy.module';
 import { ConfigModule } from '@nestjs/config';
+import { ProxyCacheModule } from './proxy-cache/proxy-cache.module';
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    CacheModule.register({
-      isGlobal: true,
-      ttl: process.env.CACHE_TTL ? parseInt(process.env.CACHE_TTL) : 10000,
-    }),
-    ApiProxyModule,
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), ProxyCacheModule],
   controllers: [],
-  providers: [{ provide: APP_INTERCEPTOR, useClass: CacheInterceptor }],
+  providers: [],
 })
 export class AppModule {}
