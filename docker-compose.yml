@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: caching-server-nestjs
+    ports:
+      - '3000:3000' # Mapeia a porta 3000 do container para a porta 3000 da máquina
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - '6379:6379' # Mapeia a porta 6379 para o Redis
+    restart: always
